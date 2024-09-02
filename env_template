@@ -1,0 +1,8 @@
+PORT = El puerto que se expone en el servidor ejm: 3000
+user = Nombre del usuario creado en la base de datos para establecer la conexión
+pass = Contraseña del usuario que se crea en la DB para la conexión
+cluster = Nombre del cluster al cual se realiza la conexión, en este caso, se esta usando mongoDB
+database = Nombre de la base de datos donde se haran las consultas de las colecciones
+WHITELIST = Direcciones IP o URLs que sean seguras para realizar peticiones al servidor, estas deben estar separadas por "," si son mas de una o usar el caracter "*" para permitir peticiones de toda fuente, no recomendable para estados de producción por las brechas de seguridad.
+secret = Se usa para la encriptación de jsonWebTokens
+expTime = tiempo que se desea que el token generado siga siendo valido

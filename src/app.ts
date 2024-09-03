@@ -1,24 +1,13 @@
-import express, { Application } from "express";
-import Routes from "@routes/index";
+import express from "express";
 import cors from "cors";
-const app: Application = express();
+import Routes from "@routes/index";
 
-// CORS whitelist
-const whitelist = process.env.WHITELIST
-  ? process.env.WHITELIST.split(",")
-  : ["*"];
+const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: function (origin: string | undefined, callback: Function) {
-    if (origin === undefined) return callback(null, true);
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      // If the origin is in the whitelist or if it is undefined (same origin), allow the request
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: "*",
+  methods: ["GET", "POST"],
 };
 
 // Middlewares

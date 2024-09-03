@@ -1,12 +1,18 @@
 import app from "@/app";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import http from "http";
+import { Server } from "http";
+import { Server as WebSocketServer } from "socket.io";
+import WebSocketHandler from "@/utils/websocket.handler";
+
+const server = http.createServer(app);
 
 dotenv.config();
 const PORT = parseInt(process.env.PORT ?? "3000");
 
-const startServer = (port: number) => {
-  app
+function startHttpServer(server: Server, port: number) {
+  server
     .listen(port, () => {
       console.log(`Server running on port ${port}`);
     })
@@ -15,13 +21,18 @@ const startServer = (port: number) => {
         console.log(
           `The port ${port} is already in use, trying the next one...`
         );
-        startServer(port + 1); // Try the next port
+        startHttpServer(server, port + 1); // Try the next port
       } else {
         console.log("An error occurred while trying to start the server", err);
       }
     });
-};
+  return server;
+}
 
+function startWebSocketServer(server: Server) {
+  const io = new WebSocketServer(server, { cors: { origin: "*" } });
+  return io;
+}
 
 mongoose.Promise = global.Promise;
 mongoose
@@ -30,7 +41,9 @@ mongoose
   )
   .then(() => {
     console.log("Connected to the database successfully");
-    startServer(PORT);
+    const httpServer = startHttpServer(server, PORT);
+    const io = startWebSocketServer(httpServer);
+    new WebSocketHandler(io); // Initialize the WebSocket handler (initialize the events)
   })
   .catch((err: any) => {
     console.error("Error connecting to the database", err);
